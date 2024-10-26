@@ -38,42 +38,54 @@ export class CartController {
             await validateOrReject(addToCartDto);
             const { userId, productId, quantity } = req.body;
             const redisKey = this.redisKey(userId);
-
+    
             const product = await Product.findById(productId);
             if (!product) {
-                errorResponse(res, 'Product not found', 'Product not found', 400)
+                errorResponse(res, 'Product not found', 'Product not found', 400);
                 return;
             }
             if (product.stock < quantity) {
-                errorResponse(res, 'Insufficient stock', 'Insufficient stock', 400)
+                errorResponse(res, 'Insufficient stock', 'Insufficient stock', 400);
                 return;
             }
-
+    
             let cartData = await this.redisClient.get(redisKey);
-            let cart = cartData ? new Cart(JSON.parse(cartData)) : await Cart.findOne({ userId });
-
-            if (!cart) {
-                // If no cart exists, retrieve from DB or create new in MongoDB
-                cart = new Cart({ userId, products: [] });
+            let cart: ICart | null = null;
+    
+            if (cartData) {
+                // If data exists in Redis, parse it directly
+                cart = JSON.parse(cartData);
+            } else {
+                // Retrieve from MongoDB if not in Redis
+                cart = await Cart.findOne({ userId });
             }
     
-            // Update the quantity if the product exists in cart, or add a new product entry
-            const existingItem = cart.products.find(item => item.productId.equals(productId));
+            // If no cart exists, initialize products array
+            const products = cart?.products || [];
+    
+            // Update quantity if product exists, or add a new product
+            const existingItem = products.find(item => item.productId.toString() === productId.toString());
             if (existingItem) {
                 existingItem.quantity += quantity;
             } else {
-                cart.products.push({ productId: new Types.ObjectId(productId), quantity });
+                products.push({ productId: new Types.ObjectId(productId), quantity });
             }
     
-            // Save cart to MongoDB and cache updated cart in Redis
-            await cart.save();
-            await this.redisClient.set(redisKey, JSON.stringify(cart));
-            successResponse(res, cart, 'Item added to cart', 201);
+            // Use findOneAndUpdate to upsert and avoid duplicate key errors
+            const updatedCart = await Cart.findOneAndUpdate(
+                { userId },
+                { $set: { products } },
+                { upsert: true, new: true }
+            );
+    
+            // Cache updated cart in Redis
+            await this.redisClient.set(redisKey, JSON.stringify(updatedCart));
+            successResponse(res, updatedCart, 'Item added to cart', 201);
         } catch (err) {
             errorResponse(res, err);
         }
     };
-
+    
     removeItemFromCart = async (req: Request, res: Response): Promise<void> => {
         const removeFromCartDto = plainToInstance(RemoveFromCartDto, req.body);
 
@@ -103,9 +115,9 @@ export class CartController {
             }
 
             // Save the updated cart
-            if (cartData){
+            if (cartData) {
                 await Cart.findOneAndUpdate({ userId }, { products: cart.products });
-            }else{
+            } else {
                 await cart.save();
             }
             await this.redisClient.set(redisKey, JSON.stringify(cart));
@@ -120,20 +132,61 @@ export class CartController {
         try {
             const redisKey = this.redisKey(userId);
             let cartData = await this.redisClient.get(redisKey);
+    
+            let cart;
             if (!cartData) {
-                const cart = await Cart.findOne({ userId }).populate('products.productId');
+                // Retrieve and populate cart data from MongoDB
+                cart = await Cart.findOne({ userId })
+                    .populate({
+                        path: 'products.productId',
+                        model: 'Product',
+                        select: '_id name description price'
+                    });
+    
                 if (!cart) {
                     errorResponse(res, "Cart not found", 'Cart not found', 404);
                     return;
                 }
+                // Cache the populated cart in Redis
                 cartData = JSON.stringify(cart);
                 await this.redisClient.set(redisKey, cartData);
+            } else {
+                // Parse cart data from Redis, then re-populate to ensure product details are present
+                cart = await Cart.findOne({ userId }).populate({
+                    path: 'products.productId',
+                    model: 'Product',
+                    select: '_id name description price'
+                });
             }
-            successResponse(res, JSON.parse(cartData), '');
+
+            if (!cart) {
+                errorResponse(res, "Cart not found", 'Cart not found', 404);
+                return;
+            }
+    
+            // Transform cart data to match CartResponseDto
+            const cartResponse: CartResponseDto = {
+                _id: (cart._id ?? "").toString(),
+                userId: cart.userId.toString(),
+                products: cart.products.map((item: any) => ({
+                    _id: item._id,
+                    productId: item.productId._id,
+                    name: item.productId.name,
+                    description: item.productId.description,
+                    quantity: item.quantity
+                })),
+                totalPrice: cart.products.reduce((total: number, item: any) => 
+                    total + item.productId.price * item.quantity, 
+                    0
+                )
+            };
+    
+            successResponse(res, cartResponse, '');
         } catch (err) {
             errorResponse(res, err);
         }
     };
+    
 
     checkout = async (req: Request, res: Response): Promise<void> => {
         const checkoutDto = plainToInstance(CheckoutDto, req.body);

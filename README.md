@@ -163,10 +163,10 @@ yarn seed
     }
     ```
 
-- **POST /cart/:userId/checkout**: Process the user's checkout.
+- **POST /cart/checkout**: Process the user's checkout.
 
 ### 3. **Checkout Process**
-- **POST /cart/:userId/checkout**: Validates the cart and processes the checkout by adjusting stock levels. Ensures no overselling occurs.
+- **POST /cart/checkout**: Validates the cart and processes the checkout by adjusting stock levels. Ensures no overselling occurs.
 
 ## Postman Collection
 API documentation can be found in cardtonic.json

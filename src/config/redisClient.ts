@@ -56,6 +56,21 @@ class RedisClient {
         }
     }
 
+    public async reset(): Promise<string | null> {
+        try {
+            return await this.client.flushall((err, reply) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(reply);  // 'OK'
+                }
+            });
+        } catch (err) {
+            console.error('Error fetching from Redis:', err);
+            return null;
+        }
+    }
+
     public async del(key: string) {
         try {
             await this.client.del(key);

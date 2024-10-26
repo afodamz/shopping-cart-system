@@ -14,6 +14,6 @@ export class CartRoutes{
         this.router.post('/', this.cartController.addItemToCart);
         this.router.post('/checkout', this.cartController.checkout);
         this.router.get('/:userId', this.cartController.viewCart);
-        this.router.put('/:userId/checkout', this.cartController.removeItemFromCart);
+        this.router.put('/:userId/', this.cartController.removeItemFromCart);
     }
 }

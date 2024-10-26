@@ -41,13 +41,13 @@ export class CartProductResponseDto {
 // Cart Output DTO (response)
 export class CartResponseDto {
     @IsString()
-    public id: string = "";
+    public _id: string = "";
 
     @IsString()
     public userId: string ="";
 
     @IsNotEmpty({ each: true })
-    products: Array<{ productId: string; quantity: number }> = [];
+    products: Array<{ _id: string; productId: string; name: string; description: string; quantity: number }> = [];
 
     totalPrice: number = 0;
 }
