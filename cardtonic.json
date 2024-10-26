@@ -1,0 +1,147 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "cardtonic",
+    "collectionId": "7f28a85c-7480-41a2-94d2-ce87226e1c1b",
+    "dateExported": "2024-10-26T07:43:31.528Z",
+    "version": "1.2",
+    "folders": [
+        {
+            "_id": "e303dbc0-4cdf-455d-a738-60ee90f279e1",
+            "name": "products",
+            "containerId": "",
+            "created": "2024-10-26T04:41:55.672Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "d577592d-81c2-4c02-affe-121038c40f83",
+            "name": "cart",
+            "containerId": "",
+            "created": "2024-10-26T04:42:33.911Z",
+            "sortNum": 20000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "7d678254-be2e-4c3b-aeb5-313a2aef1be9",
+            "colId": "7f28a85c-7480-41a2-94d2-ce87226e1c1b",
+            "containerId": "e303dbc0-4cdf-455d-a738-60ee90f279e1",
+            "name": "create product",
+            "url": "http://localhost:3000/api/products",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-10-26T04:40:31.586Z",
+            "modified": "2024-10-26T04:40:31.586Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Calculator\",\n  \"price\": 1000,\n  \"stock\": 700\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "1b0a63b7-f5c9-46ce-b78c-c0132f333dbb",
+            "colId": "7f28a85c-7480-41a2-94d2-ce87226e1c1b",
+            "containerId": "d577592d-81c2-4c02-affe-121038c40f83",
+            "name": "add to cart",
+            "url": "http://localhost:3000/api/carts",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-10-26T04:42:33.911Z",
+            "modified": "2024-10-26T05:43:59.623Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"productId\": \"671c629236f369e6e4b8045e\",\n  \"quantity\": 3,\n  \"userId\": \"60f7f1e4e1b2c4a2b7e4b8d4\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "867c41b4-92ef-44e3-914f-674e3c62b1a5",
+            "colId": "7f28a85c-7480-41a2-94d2-ce87226e1c1b",
+            "containerId": "e303dbc0-4cdf-455d-a738-60ee90f279e1",
+            "name": "update product by id",
+            "url": "http://localhost:3000/api/products/671c629236f369e6e4b8045d",
+            "method": "PUT",
+            "sortNum": 20000,
+            "created": "2024-10-26T04:40:33.332Z",
+            "modified": "2024-10-26T04:40:33.332Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"stock\": 60\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "08e1ec14-3abb-4b52-abd4-48c3c02bd719",
+            "colId": "7f28a85c-7480-41a2-94d2-ce87226e1c1b",
+            "containerId": "d577592d-81c2-4c02-affe-121038c40f83",
+            "name": "remove from cart",
+            "url": "http://localhost:3000/api/carts/60f7f1e4e1b2c4a2b7e4b8d4/",
+            "method": "PUT",
+            "sortNum": 20000,
+            "created": "2024-10-26T04:42:33.912Z",
+            "modified": "2024-10-26T07:00:27.325Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"productId\": \"671c629236f369e6e4b8045e\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "ea2932a1-23b6-49db-9456-945153c2d878",
+            "colId": "7f28a85c-7480-41a2-94d2-ce87226e1c1b",
+            "containerId": "e303dbc0-4cdf-455d-a738-60ee90f279e1",
+            "name": "get product by id",
+            "url": "http://localhost:3000/api/products/671c629236f369e6e4b8045d",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2024-10-26T04:40:35.107Z",
+            "modified": "2024-10-26T04:40:35.107Z",
+            "headers": []
+        },
+        {
+            "_id": "9b1b0ab0-0bc3-40b3-a711-af27f7341ed2",
+            "colId": "7f28a85c-7480-41a2-94d2-ce87226e1c1b",
+            "containerId": "d577592d-81c2-4c02-affe-121038c40f83",
+            "name": "view cart",
+            "url": "http://localhost:3000/api/carts/60f7f1e4e1b2c4a2b7e4b8d4",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2024-10-26T04:42:33.913Z",
+            "modified": "2024-10-26T05:15:36.284Z",
+            "headers": []
+        },
+        {
+            "_id": "8ad6aee6-8235-4ca0-bd95-8af277ca4bf8",
+            "colId": "7f28a85c-7480-41a2-94d2-ce87226e1c1b",
+            "containerId": "e303dbc0-4cdf-455d-a738-60ee90f279e1",
+            "name": "get products",
+            "url": "http://localhost:3000/api/products/",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2024-10-26T04:40:36.393Z",
+            "modified": "2024-10-26T04:40:36.393Z",
+            "headers": []
+        },
+        {
+            "_id": "79329b70-d1e2-4573-8414-9707b7652f2d",
+            "colId": "7f28a85c-7480-41a2-94d2-ce87226e1c1b",
+            "containerId": "d577592d-81c2-4c02-affe-121038c40f83",
+            "name": "checkout",
+            "url": "http://localhost:3000/api/carts/checkout",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2024-10-26T04:42:33.914Z",
+            "modified": "2024-10-26T06:18:51.569Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"userId\": \"60f7f1e4e1b2c4a2b7e4b8d4\"\n}",
+                "form": []
+            }
+        }
+    ],
+    "ref": "myFwrWA4mXiVxCcfVal_RWuj-9AJc33pLC4B2N2AwsngYGwBuf6-OGaEvFO2h-SY4EPmQTA2FJp5yNfnEjZdug"
+}

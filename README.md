@@ -119,19 +119,57 @@ yarn seed
 ### 1. **Product Management**
 
 - **GET /products**: Fetch all products.
+  - **Response**: An array of product objects.
+
 - **POST /products**: Add a new product (requires admin privileges).
+  - **Request Body**: 
+    ```json
+    {
+      "name": "Product Name",
+      "price": 1000,
+      "stock": 50
+    }
+    ```
+
 - **PUT /products/:id**: Update product details (requires admin privileges).
+  - **Request Body**: 
+    ```json
+    {
+      "stock": 30
+    }
+    ```
+
 - **DELETE /products/:id**: Delete a product (requires admin privileges).
 
 ### 2. **Cart Management**
 
 - **GET /cart/:userId**: Retrieve the cart for a user.
+  - **Response**: Cart object for the specified user.
+
 - **POST /cart/**: Add a product to the user's cart.
+  - **Request Body**:
+    ```json
+    {
+      "productId": "product_id_here",
+      "quantity": 2
+    }
+    ```
+
 - **PUT /cart/:userId**: Remove a product from the user's cart.
+  - **Request Body**:
+    ```json
+    {
+      "productId": "product_id_here"
+    }
+    ```
+
 - **POST /cart/:userId/checkout**: Process the user's checkout.
 
 ### 3. **Checkout Process**
 - **POST /cart/:userId/checkout**: Validates the cart and processes the checkout by adjusting stock levels. Ensures no overselling occurs.
+
+## Postman Collection
+API documentation can be found in cardtonic.json
 
 ## Key Concepts and Design Decisions
 
@@ -143,19 +181,6 @@ We cache user carts in Redis to reduce database load and speed up retrieval time
 
 ### **Data Consistency**
 We ensure data consistency during checkout by using MongoDB transactions, particularly for operations involving stock adjustments. This prevents partial updates and ensures that if one part of the process fails (e.g., out of stock), the entire transaction is aborted.
-
-## Running Tests
-You can run the unit tests by using:
-
-```bash
-npm run test
-```
-
-or
-
-```bash
-yarn test
-```
 
 ## Docker Notes
 If you are using Docker Compose, it will automatically build the services for you. It will spin up the MongoDB, and Redis services in isolated containers.
