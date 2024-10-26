@@ -22,6 +22,10 @@ export default class Server {
         this.redis = RedisClient.getInstance();
     }
 
+    public getApp(): express.Application {
+        return this.app;
+    }
+
     private config(): void {
         this.app.use(cors(corsOptions))
         this.app.set("port", sanitizedConfig.PORT || 3000)

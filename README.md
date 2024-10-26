@@ -182,6 +182,18 @@ We cache user carts in Redis to reduce database load and speed up retrieval time
 ### **Data Consistency**
 We ensure data consistency during checkout by using MongoDB transactions, particularly for operations involving stock adjustments. This prevents partial updates and ensures that if one part of the process fails (e.g., out of stock), the entire transaction is aborted.
 
+## Running Tests
+You can run the unit tests by using:
+
+bash
+npm run test
+
+
+or
+
+bash
+yarn test
+
 ## Docker Notes
 If you are using Docker Compose, it will automatically build the services for you. It will spin up the MongoDB, and Redis services in isolated containers.
 
