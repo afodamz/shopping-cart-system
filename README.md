@@ -118,10 +118,10 @@ yarn seed
 
 ### 1. **Product Management**
 
-- **GET /products**: Fetch all products.
+- **GET /api/products**: Fetch all products.
   - **Response**: An array of product objects.
 
-- **POST /products**: Add a new product (requires admin privileges).
+- **POST /api/products**: Add a new product (requires admin privileges).
   - **Request Body**: 
     ```json
     {
@@ -131,7 +131,7 @@ yarn seed
     }
     ```
 
-- **PUT /products/:id**: Update product details (requires admin privileges).
+- **PUT /api/products/:id**: Update product details (requires admin privileges).
   - **Request Body**: 
     ```json
     {
@@ -139,23 +139,24 @@ yarn seed
     }
     ```
 
-- **DELETE /products/:id**: Delete a product (requires admin privileges).
+- **DELETE /api/products/:id**: Delete a product (requires admin privileges).
 
 ### 2. **Cart Management**
 
-- **GET /cart/:userId**: Retrieve the cart for a user.
+- **GET /api/cart/:userId**: Retrieve the cart for a user.
   - **Response**: Cart object for the specified user.
 
-- **POST /cart/**: Add a product to the user's cart.
+- **POST /api/cart/**: Add a product to the user's cart.
   - **Request Body**:
     ```json
     {
       "productId": "product_id_here",
-      "quantity": 2
+      "quantity": 2,
+      "userId": "user_id_here"
     }
     ```
 
-- **PUT /cart/:userId**: Remove a product from the user's cart.
+- **PUT /api/cart/:userId**: Remove a product from the user's cart.
   - **Request Body**:
     ```json
     {
@@ -163,10 +164,15 @@ yarn seed
     }
     ```
 
-- **POST /cart/checkout**: Process the user's checkout.
+- **POST /api/cart/checkout**: Process the user's checkout.
 
 ### 3. **Checkout Process**
-- **POST /cart/checkout**: Validates the cart and processes the checkout by adjusting stock levels. Ensures no overselling occurs.
+- **POST /api/cart/checkout**: Validates the cart and processes the checkout by adjusting stock levels. Ensures no overselling occurs.
+```json
+    {
+      "userId": "user_id_here"
+    }
+    ```
 
 ## Postman Collection
 API documentation can be found in cardtonic.json
