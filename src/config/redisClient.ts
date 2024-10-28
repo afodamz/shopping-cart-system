@@ -1,14 +1,17 @@
 import Redis from "ioredis";
+import sanitizedConfig from "./config";
 
 class RedisClient {
     private static instance: RedisClient;
     private client: Redis;
 
     private constructor() {
-        const redisHost = process.env.REDIS_HOST || '127.0.0.1';
-        const redisPort = parseInt(process.env.REDIS_PORT || '6379', 10);
+        const redisHost = sanitizedConfig.REDIS_HOST || '127.0.0.1';
+        const redisPort = parseInt(sanitizedConfig.REDIS_PORT || '6379', 10);
+        const redisPassword = sanitizedConfig.REDIS_PASSWORD || '';
 
         this.client = new Redis({
+            password: redisPassword,
             host: redisHost,
             port: redisPort,
         });

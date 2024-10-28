@@ -8,6 +8,7 @@ export interface ICartItem {
 export interface ICart extends Document {
     userId: mongoose.Types.ObjectId;
     products: ICartItem[];
+    status: string;
 }
 
 const cartSchema: Schema = new mongoose.Schema({
@@ -15,7 +16,8 @@ const cartSchema: Schema = new mongoose.Schema({
     products: [{
         productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
         quantity: { type: Number, required: true, min: 1 }
-    }]
+    }],
+    status: { type: String, enum: ['OPEN', 'CLOSED'], default: 'OPEN' } 
 });
 
 export default mongoose.model<ICart>('Cart', cartSchema);

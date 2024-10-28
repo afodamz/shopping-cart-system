@@ -12,6 +12,7 @@ interface ENV {
     MONGODB_URI: string | undefined;
     REDIS_HOST: string | undefined;
     REDIS_PORT: string | undefined;
+    REDIS_PASSWORD: string | undefined;
 }
 
 interface Config {
@@ -19,6 +20,7 @@ interface Config {
     MONGODB_URI: string;
     REDIS_HOST: string;
     REDIS_PORT: string;
+    REDIS_PASSWORD: string;
 }
 
 const getConfig = (): ENV => {
@@ -27,6 +29,7 @@ const getConfig = (): ENV => {
         MONGODB_URI: process.env.MONGODB_URI,
         REDIS_HOST: process.env.REDIS_HOST,
         REDIS_PORT: process.env.REDIS_PORT,
+        REDIS_PASSWORD: process.env.REDIS_PASSWORD,
     };
 };
 

@@ -57,7 +57,7 @@ export class CartController {
                 cart = JSON.parse(cartData);
             } else {
                 // Retrieve from MongoDB if not in Redis
-                cart = await Cart.findOne({ userId });
+                cart = await Cart.findOne({ userId, status: 'OPEN' });
             }
     
             // If no cart exists, initialize products array
@@ -73,7 +73,7 @@ export class CartController {
     
             // Use findOneAndUpdate to upsert and avoid duplicate key errors
             const updatedCart = await Cart.findOneAndUpdate(
-                { userId },
+                { userId, status: 'OPEN' },
                 { $set: { products } },
                 { upsert: true, new: true }
             );
@@ -97,7 +97,7 @@ export class CartController {
             // Find the user's cart
             let cartData = await this.redisClient.get(redisKey);
 
-            const cart: ICart = cartData ? JSON.parse(cartData) : await Cart.findOne({ userId });
+            const cart: ICart = cartData ? JSON.parse(cartData) : await Cart.findOne({ userId, status: 'OPEN' });
 
             if (!cart) {
                 errorResponse(res, 'Cart not found', 'Cart not found', 404);
@@ -136,7 +136,7 @@ export class CartController {
             let cart;
             if (!cartData) {
                 // Retrieve and populate cart data from MongoDB
-                cart = await Cart.findOne({ userId })
+                cart = await Cart.findOne({ userId, status: 'OPEN' })
                     .populate({
                         path: 'products.productId',
                         model: 'Product',
@@ -152,7 +152,7 @@ export class CartController {
                 await this.redisClient.set(redisKey, cartData);
             } else {
                 // Parse cart data from Redis, then re-populate to ensure product details are present
-                cart = await Cart.findOne({ userId }).populate({
+                cart = await Cart.findOne({ userId, status: 'OPEN' }).populate({
                     path: 'products.productId',
                     model: 'Product',
                     select: '_id name description price'
@@ -203,7 +203,13 @@ export class CartController {
         try {
             // Get cart from Redis or MongoDB
             let cartData = await this.redisClient.get(redisKey);
-            let cart: ICart = cartData ? JSON.parse(cartData) : await Cart.findOne({ userId }).populate('products.productId');
+            let cart: ICart | null = null;
+            if (cartData) {
+                cart = JSON.parse(cartData);
+            } else {
+                // Retrieve the cart from MongoDB
+                cart = await Cart.findOne({ userId, status: 'OPEN' }).populate('products.productId');
+            }
 
             if (!cart) {
                 errorResponse(res, "Cart not found", "Cart not found", 404);
@@ -214,7 +220,11 @@ export class CartController {
             await this.handleProductStock(cart);
 
             // Clear the cart
-            await Cart.findOneAndDelete({ userId });
+            await Cart.findOneAndUpdate(
+                { userId, status: 'OPEN' },
+                { status: 'CLOSED' },
+                { new: true }
+            );
             await this.redisClient.del(redisKey);
 
             successResponse(res, {}, 'Checkout successful');
